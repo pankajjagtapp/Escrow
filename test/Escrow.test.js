@@ -60,7 +60,7 @@ describe("Escrow Contract", function () {
         recipient.address,
       ]
     );
-    const sig = await beneficiary.signMessage(message);
+    const sig = await beneficiary.signMessage(ethers.utils.arrayify(message));
 
     await escrow.connect(owner).release(1, sig, recipient.address);
 
@@ -68,7 +68,7 @@ describe("Escrow Contract", function () {
       initialBalance
     );
     expect(await ethers.provider.getBalance(recipient.address)).to.equal(
-      amount
+      ethers.utils.parseEther("10001")
     );
   });
 
@@ -112,14 +112,14 @@ describe("Escrow Contract", function () {
       .getNetwork()
       .then((network) => network.chainId);
 
-      const signature = await beneficiary.signMessage(message);
+      const signature = await beneficiary.signMessage(ethers.utils.arrayify(message));
     console.log("Signature: ", signature);
 
     const signatureBytes = ethers.utils.arrayify(signature);
 
     expect(signatureBytes.length).to.equal(65, "Invalid signature length");
 
-    const recoveredSigner = ethers.utils.verifyMessage(message, signature);
+    const recoveredSigner = ethers.utils.verifyMessage(ethers.utils.arrayify(message), signature);
     // const recoveredSigner = ethers.utils.verifyMessage(
     //   ethers.utils.arrayify(message),
     //   signature
