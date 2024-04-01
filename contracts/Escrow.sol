@@ -5,8 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol"
-import "hardhat/console.sol";
+import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
 contract Escrow is ReentrancyGuard {
     using SafeERC20 for IERC20;
@@ -98,10 +97,8 @@ contract Escrow is ReentrancyGuard {
                 _recipient
             )
         );
-        console.logBytes32(_message);
-        // address _signer = ECDSA.recover(_message, _sig);
-        ethSignedMessageHash = MessageHashUtils.toEthSignedMessageHash(_message);
-        console.log("signer: %s", _signer);
+        bytes32 _ethSignedMessageHash = MessageHashUtils.toEthSignedMessageHash(_message);
+        address _signer = ECDSA.recover(_ethSignedMessageHash, _sig);
 
         if (escrow.beneficiaryHash != keccak256(abi.encode(_signer)))
             revert UnauthorizedAccess(_depositId);
